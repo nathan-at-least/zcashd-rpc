@@ -1,14 +1,10 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+#![deny(missing_docs, warnings, trivial_casts, unused_qualifications)]
+#![forbid(unsafe_code)]
+#![doc = include_str!("../README.md")]
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+mod rpcprovider;
+mod zcashdclient;
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
-    }
-}
+pub mod messages;
+pub use self::rpcprovider::RpcProvider;
+pub use self::zcashdclient::ZcashdClient;

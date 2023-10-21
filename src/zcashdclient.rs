@@ -1,0 +1,2 @@
+/// FIXME
+pub struct ZcashdClient {}
