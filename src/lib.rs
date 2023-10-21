@@ -2,6 +2,7 @@
 #![forbid(unsafe_code)]
 #![doc = include_str!("../README.md")]
 
+mod jsonrpc;
 mod rpcprovider;
 mod zcashdclient;
 
