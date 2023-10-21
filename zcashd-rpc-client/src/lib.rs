@@ -1,6 +1,12 @@
-use crate::messages::GetInfo;
-use crate::{jsonrpc, RpcProvider};
+#![deny(missing_docs, warnings, trivial_casts, unused_qualifications)]
+#![forbid(unsafe_code)]
+//! A `zcashd` JSON-RPC client impl of [RpcProvider]
+
+mod jsonrpc;
+
 use async_trait::async_trait;
+use zcashd_rpc::messages::GetInfo;
+use zcashd_rpc::RpcProvider;
 
 /// A `zcashd` client which implements [RpcProvider]
 pub struct ZcashdClient {

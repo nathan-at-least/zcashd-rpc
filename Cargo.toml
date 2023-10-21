@@ -2,4 +2,19 @@
 resolver = "2"
 members = [
   "zcashd-rpc",
+  "zcashd-rpc-client",
+  "zcashd-rpc-fuzzer",
 ]
+
+[workspace.package]
+edition = "2021"
+
+[workspace.dependencies]
+async-trait = "0.1.74"
+derive_more = "0.99.17"
+rand = "0.8.5"
+rand_chacha = "0.3.1"
+reqwest = { version = "0.11.22", features = ["json"] }
+serde_json = "1.0.107"
+serde = { version = "1.0.189", features = ["derive"] }
+zcashd-rpc = { path = "./zcashd-rpc" }

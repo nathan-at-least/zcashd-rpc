@@ -1,9 +1,9 @@
-//! Implementations of [rand::Distribution] for [messages](crate::messages) to support [FuzzProvider](crate::FuzzProvider)
+//! Implementations of [rand::Distribution] for [zcashd_rpc::messages] and [zcashd_rpc::zcash_types] to support [FuzzProvider](crate::FuzzProvider)
 
-use crate::messages;
-use crate::randutil::FuzzDistribution;
+use crate::fuzzdist::FuzzDistribution;
 use rand::distributions::Distribution;
 use rand::Rng;
+use zcashd_rpc::messages;
 
 impl Distribution<messages::GetInfo> for FuzzDistribution {
     fn sample<R>(&self, rng: &mut R) -> messages::GetInfo
