@@ -1,29 +1,31 @@
-use crate::messages::get_info;
+use crate::messages::GetInfo;
 use crate::RpcProvider;
-use std::future::Future;
-use std::pin::Pin;
-use std::task::{Context, Poll};
-use tower::Service;
+use async_trait::async_trait;
+use jsonrpc::client::Client as JsonRpcClient;
+use jsonrpc::http::simple_http::Error as JsonRpcError;
 
 /// A `zcashd` client which implements [RpcProvider]
-pub struct ZcashdClient {}
+pub struct ZcashdClient {
+    #[allow(dead_code)]
+    client: JsonRpcClient,
+}
+
+impl ZcashdClient {
+    /// Construct a new client
+    pub fn new(url: &str, user: String, password: String) -> Result<Self, JsonRpcError> {
+        let client = JsonRpcClient::simple_http(url, Some(user), Some(password))?;
+        Ok(ZcashdClient { client })
+    }
+}
 
 /// An error during method execution
 pub struct ZcashdClientError {}
 
-impl RpcProvider for ZcashdClient {}
-
-impl Service<get_info::Request> for ZcashdClient {
-    type Response = get_info::Response;
+#[async_trait]
+impl RpcProvider for ZcashdClient {
     type Error = ZcashdClientError;
-    // FIXME: Replace with a concrete type?
-    type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>>>>;
 
-    fn poll_ready(&mut self, _cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
-        todo!()
-    }
-
-    fn call(&mut self, _req: get_info::Request) -> Self::Future {
+    async fn get_info(&mut self) -> Result<GetInfo, Self::Error> {
         todo!()
     }
 }

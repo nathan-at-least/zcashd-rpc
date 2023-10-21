@@ -1,3 +1,4 @@
 //! The messages in [RpcProvider](crate::RpcProvider) requests and responses
 
-pub mod get_info;
+/// General status information for a node
+pub struct GetInfo {}

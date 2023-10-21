@@ -1,6 +1,13 @@
 // use async_trait::async_trait;
-use crate::messages::get_info;
-use tower::Service;
+use crate::messages::GetInfo;
+use async_trait::async_trait;
 
-/// FIXME
-pub trait RpcProvider: Service<get_info::Request, Response = get_info::Response> {}
+/// A trait for providers of a zcashd-compatible RPC interface
+#[async_trait]
+pub trait RpcProvider {
+    /// A provider-specific error type:
+    type Error;
+
+    /// Get the general status information about a node
+    async fn get_info(&mut self) -> Result<GetInfo, Self::Error>;
+}

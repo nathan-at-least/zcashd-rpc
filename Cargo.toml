@@ -7,5 +7,5 @@ edition = "2021"
 
 [dependencies]
 async-trait = "0.1.74"
-jsonrpc = "0.16.0"
+jsonrpc = { version = "0.16.0", features = ["simple_http"] }
 tower = "0.4.13"
