@@ -4,6 +4,7 @@
 
 mod fuzzprovider;
 mod jsonrpc;
+mod randutil;
 mod rpcprovider;
 mod zcashdclient;
 

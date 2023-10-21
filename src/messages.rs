@@ -1,5 +1,7 @@
 //! The messages in [RpcProvider](crate::RpcProvider) requests and responses
 
+mod distimpls;
+
 use crate::zcash_types::{BlockHeight, ConstZero, Timestamp, VersionEncoding, Zat};
 
 /// General status information for a node

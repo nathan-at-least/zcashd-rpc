@@ -25,6 +25,9 @@ impl RpcProvider for FuzzProvider {
     type Error = ();
 
     async fn get_info(&mut self) -> Result<GetInfo, Self::Error> {
-        todo!()
+        use crate::randutil::FuzzDistribution;
+        use rand::Rng;
+
+        Ok(self.rng.sample(FuzzDistribution))
     }
 }
