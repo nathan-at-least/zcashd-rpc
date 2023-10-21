@@ -1,6 +1,6 @@
 #![deny(missing_docs, warnings, trivial_casts, unused_qualifications)]
 #![forbid(unsafe_code)]
-#![doc = include_str!("../README.md")]
+#![doc = include_str!("../../README.md")]
 
 mod fuzzprovider;
 mod jsonrpc;
