@@ -6,14 +6,16 @@
 
 use anyhow::Context;
 use std::process::ExitStatus;
-use tempdir::TempDir;
+use tempfile::TempDir;
 use tokio::process::Child;
 
 /// Represents the status of a `zcashd` process and its configuration
 #[derive(Debug)]
 pub struct ZcashdProcessInfo {
+    /// The purpose of this field is merely to delegate to `TempDir::drop` when `Self` drops, so it is not quite "unused". The unused warning could be considered a false-positive for this case.
+    #[allow(unused)]
     datadir: TempDir,
-    command: String,
+    command_description: String,
     child: Child,
 }
 
@@ -24,20 +26,21 @@ impl ZcashdProcessInfo {
     pub fn launch_temporary_regtest_node() -> anyhow::Result<Self> {
         use tokio::process::Command;
 
-        let datadir = tempdir::TempDir::new(&format!("{}_regtest_node.", env!("CARGO_PKG_NAME")))?;
+        let datadir =
+            tempfile::TempDir::with_prefix(format!("{}_regtest_node.", env!("CARGO_PKG_NAME")))?;
 
         let mut cmd = Command::new("zcashd");
         cmd.arg("-regtest");
         cmd.arg(format!("-datadir={}", datadir.as_ref().display()));
         cmd.current_dir(&datadir);
 
-        let command = format!("command: {:?}", &cmd);
+        let command_description = format!("command: {:?}", &cmd);
 
-        let child = cmd.spawn().context(&command)?;
+        let child = cmd.spawn().context(command_description.clone())?;
 
         Ok(ZcashdProcessInfo {
             datadir,
-            command,
+            command_description,
             child,
         })
     }
@@ -46,7 +49,7 @@ impl ZcashdProcessInfo {
     pub async fn kill(self) -> anyhow::Result<ExitStatus> {
         kill_without_error_context(self.child)
             .await
-            .context(self.command)
+            .context(self.command_description)
     }
 }
 
