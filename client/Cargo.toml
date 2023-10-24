@@ -11,3 +11,7 @@ serde_json.workspace = true
 serde.workspace = true
 zcashd-rpc-messages.workspace = true
 zcashd-rpc-provider.workspace = true
+
+[dev-dependencies]
+anyhow.workspace = true
+tokio = { workspace = true, features = ["rt", "macros"] }
