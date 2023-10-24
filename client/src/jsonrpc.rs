@@ -1,5 +1,7 @@
 mod errors;
 
+use std::fmt;
+
 pub use self::errors::{CallError, NewError};
 
 pub(crate) struct Client {
@@ -19,6 +21,10 @@ impl Client {
             endpoint,
             idgen,
         })
+    }
+
+    pub(crate) fn endpoint(&self) -> &reqwest::Url {
+        &self.endpoint
     }
 
     pub(crate) async fn call<P, R>(&mut self, method: &str, params: P) -> Result<R, CallError>
@@ -67,6 +73,14 @@ impl Client {
                 }
             }
         }
+    }
+}
+
+impl fmt::Debug for Client {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let typename = std::any::type_name::<Self>();
+        let endpoint = &self.endpoint;
+        write!(f, "{typename}[{endpoint}]")
     }
 }
 

@@ -5,6 +5,7 @@
 mod jsonrpc;
 
 use async_trait::async_trait;
+use std::fmt;
 use zcashd_rpc_messages::GetInfo;
 use zcashd_rpc_provider::RpcProvider;
 
@@ -28,5 +29,13 @@ impl RpcProvider for ZcashdClient {
 
     async fn get_info(&mut self) -> Result<GetInfo, Self::Error> {
         self.jsonclient.call("getinfo", ()).await
+    }
+}
+
+impl fmt::Debug for ZcashdClient {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let typename = std::any::type_name::<Self>();
+        let endpoint = &self.jsonclient.endpoint();
+        write!(f, "{typename}[{endpoint}]")
     }
 }
