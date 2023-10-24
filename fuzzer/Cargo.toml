@@ -8,4 +8,5 @@ async-trait.workspace = true
 rand_chacha.workspace = true
 rand.workspace = true
 serde.workspace = true
-zcashd-rpc.workspace = true
+zcashd-rpc-messages.workspace = true
+zcashd-rpc-provider.workspace = true

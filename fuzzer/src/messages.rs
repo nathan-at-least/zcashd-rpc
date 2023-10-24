@@ -3,7 +3,7 @@
 use crate::fuzzdist::FuzzDistribution;
 use rand::distributions::Distribution;
 use rand::Rng;
-use zcashd_rpc::messages;
+use zcashd_rpc_messages as messages;
 
 impl Distribution<messages::GetInfo> for FuzzDistribution {
     fn sample<R>(&self, rng: &mut R) -> messages::GetInfo

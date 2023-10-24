@@ -1,10 +1,7 @@
-# `zcashd-rpc`
+# `zcashd-rpc-*` crates
 
-A rust crate for consumers _and providers_ of the Zcashd JSON RPC interface.
+A suite of rust crates for working with `zcashd`'s RPC interface or related clients and tools.
 
-The key interfaces is [RpcProvider]. Clients can use impls of this trait to automate usage of Zcashd-like systems. 
+## `RpcProvider`
 
-## Related crates
-
-- `zcashd-rpc-client`: A JSON RPC client implementation which can be used to connect to `zcashd` or services that emulate it. 
-- `zcashd-rpc-fuzzer`: An [RpcProvider] impl that returns structurally correct, yet random replies.
+The cornerstone trait is `RpcProvider` found in `zcashd-rpc-provider` which is an `async-trait` that maps one-to-one to `zcashd` RPC method calls and responses.

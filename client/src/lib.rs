@@ -5,8 +5,8 @@
 mod jsonrpc;
 
 use async_trait::async_trait;
-use zcashd_rpc::messages::GetInfo;
-use zcashd_rpc::RpcProvider;
+use zcashd_rpc_messages::GetInfo;
+use zcashd_rpc_provider::RpcProvider;
 
 /// A `zcashd` client which implements [RpcProvider]
 pub struct ZcashdClient {
