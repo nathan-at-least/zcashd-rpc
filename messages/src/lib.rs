@@ -1,4 +1,9 @@
-//! The messages in [RpcProvider](crate::RpcProvider) requests and responses
+#![deny(missing_docs, warnings, trivial_casts, unused_qualifications)]
+#![forbid(unsafe_code)]
+
+//! The messages in used in `zcashd` RPC requests and responses
+//!
+//! While this crate is useful for any tools manipulating the message types, the `zcashd-rpc-provider` crate defines the RPC interface itself.
 
 pub mod zcash_types;
 

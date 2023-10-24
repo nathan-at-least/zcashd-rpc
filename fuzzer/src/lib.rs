@@ -1,3 +1,8 @@
+#![deny(missing_docs, warnings, trivial_casts, unused_qualifications)]
+#![forbid(unsafe_code)]
+
+//! [FuzzProvider] is an [RpcProvider] impl that returns strucutrally valid random responses
+
 mod fuzzdist;
 mod messages;
 

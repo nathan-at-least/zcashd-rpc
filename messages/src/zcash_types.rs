@@ -1,4 +1,4 @@
-//! This mod provides Zcash types used by [RpcProvider](crate::RpcProvider) and [messages](crate::messages)
+//! This mod provides Zcash types used in `zcashd` RPC messages
 //!
 //! Ideally all of these types would be:
 //! - newtypes which enforce value contraints appropriate to the type
