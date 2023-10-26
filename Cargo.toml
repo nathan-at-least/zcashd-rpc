@@ -5,7 +5,7 @@ members = [
   "fuzzer",
   "messages",
   "provider",
-  "zcashd-process",
+  "regtest-controller",
 ]
 
 [workspace.package]
@@ -26,4 +26,4 @@ thiserror = "1.0.50"
 tokio = { version = "1.33.0", features = ["rt", "macros"] }
 zcashd-rpc-messages = { path = "./messages" }
 zcashd-rpc-provider = { path = "./provider" }
-zcashd-process = { path = "./zcashd-process" }
+zcashd-regtest-controller = { path = "./regtest-controller" }

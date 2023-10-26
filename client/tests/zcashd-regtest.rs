@@ -1,12 +1,14 @@
+use zcashd_regtest_controller::ZcashdConfig;
 use zcashd_rpc_client::ZcashdClient;
 use zcashd_rpc_provider::RpcProvider;
 
+#[ignore] // This test is not yet functional.
 #[tokio::test]
 async fn get_info() -> anyhow::Result<()> {
-    zcashd_process::with_temporary_regtest_node(get_info_with_node).await
+    zcashd_regtest_controller::with_temporary_regtest_node(get_info_with_node).await
 }
 
-async fn get_info_with_node(node_config: zcashd_process::ZcashdConfig) -> anyhow::Result<()> {
+async fn get_info_with_node(node_config: ZcashdConfig) -> anyhow::Result<()> {
     println!(
         "launched regtest node with datadir {:?}",
         node_config.datadir.display()

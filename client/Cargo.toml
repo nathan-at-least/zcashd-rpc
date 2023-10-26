@@ -16,4 +16,4 @@ zcashd-rpc-provider.workspace = true
 [dev-dependencies]
 anyhow.workspace = true
 tokio = { workspace = true, features = ["rt", "macros"] }
-zcashd-process.workspace = true
+zcashd-regtest-controller.workspace = true
