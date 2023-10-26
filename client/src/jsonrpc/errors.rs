@@ -5,9 +5,9 @@ pub type NewError = <reqwest::Url as std::str::FromStr>::Err;
 
 #[derive(Debug, Error, derive_more::From)]
 pub enum CallError {
-    #[error("http client")]
+    #[error("http protocol error: {0}")]
     Reqwest(reqwest::Error),
-    #[error("http protocol")]
+    #[error("http server error: [{status}] {body}")]
     HttpError { status: String, body: String },
     #[error("jsonrpc protocol: {0}")]
     JsonRpcInvalid(JsonRpcInvalidReason),

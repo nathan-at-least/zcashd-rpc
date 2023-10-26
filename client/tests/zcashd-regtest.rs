@@ -5,7 +5,7 @@ use zcashd_rpc_provider::RpcProvider;
 #[ignore] // This test is not yet functional.
 #[tokio::test]
 async fn get_info() -> anyhow::Result<()> {
-    zcashd_regtest_controller::with_temporary_regtest_node(get_info_with_node).await
+    zcashd_regtest_controller::with_temporary_node(get_info_with_node).await
 }
 
 async fn get_info_with_node(node_config: ZcashdConfig) -> anyhow::Result<()> {
