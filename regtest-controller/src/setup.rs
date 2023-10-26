@@ -11,6 +11,7 @@ pub(crate) async fn setup() -> anyhow::Result<(Child, ZcashdConfig)> {
 
     write_config(&datadir).await?;
     let (child, command_description) = launch_child(&datadir)?;
+    // TODO: block on rpc service and also include cookie in `ZcashdConfig`.
 
     let config = ZcashdConfig {
         datadir,
