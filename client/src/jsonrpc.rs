@@ -7,18 +7,21 @@ pub use self::errors::{CallError, NewError};
 pub(crate) struct Client {
     client: reqwest::Client,
     endpoint: reqwest::Url,
+    authheader: String,
     idgen: std::ops::Range<u64>,
 }
 
 impl Client {
-    pub(crate) fn new(endpoint: &str) -> Result<Self, NewError> {
+    pub(crate) fn new(endpoint: &str, cookie: &str) -> Result<Self, NewError> {
         let client = reqwest::Client::new();
         let endpoint = endpoint.parse()?;
+        let authheader = format!("Basic {}", base64_encode(cookie));
         let idgen = 0..u64::MAX;
 
         Ok(Client {
             client,
             endpoint,
+            authheader,
             idgen,
         })
     }
@@ -30,48 +33,36 @@ impl Client {
     pub(crate) async fn call<P, R>(&mut self, method: &str, params: P) -> Result<R, CallError>
     where
         P: serde::Serialize,
-        R: serde::de::DeserializeOwned,
+        R: serde::Serialize + serde::de::DeserializeOwned,
     {
         let id = self.idgen.next().expect("u64 request id overflow!");
 
         let response = self
             .client
             .post(self.endpoint.clone())
-            .json(&RequestEnvelope {
-                method,
-                params,
-                id,
-                jsonrpc: JSON_RPC_VERSION,
-            })
+            .header("Authorization", &self.authheader)
+            .json(&RequestEnvelope { method, params, id })
             .send()
             .await?;
 
         let status = response.status();
-        if !status.is_success() {
-            let status = status.to_string();
-            let body = response.text().await?;
-            return Err(CallError::HttpError { status, body });
-        }
-
-        let response: Response<R> = response.json().await?;
-
-        {
+        if status.is_success() || status.is_server_error() {
             use self::errors::JsonRpcInvalidReason::*;
-            use ResultResponse::*;
 
-            if response.jsonrpc != JSON_RPC_VERSION {
-                Err(UnknownVersion(response.jsonrpc))?
-            } else if response.id != id {
+            let response: Response<R> = response.json().await?;
+
+            if response.id != id {
                 Err(UnexpectedId {
                     expected: id,
                     found: response.id,
                 })?
             } else {
-                match response.result {
-                    Result { result } => Ok(result),
-                    Error { error } => Err(error)?,
-                }
+                response.into_result()
             }
+        } else {
+            let status = status.to_string();
+            let body = response.text().await?;
+            Err(CallError::HttpError { status, body })
         }
     }
 }
@@ -84,27 +75,42 @@ impl fmt::Debug for Client {
     }
 }
 
-const JSON_RPC_VERSION: &str = "2.0";
-
 #[derive(Debug, serde::Serialize)]
 struct RequestEnvelope<'a, P> {
     method: &'a str,
     params: P,
     id: u64,
-    jsonrpc: &'static str,
 }
 
 #[derive(Debug, serde::Deserialize)]
 struct Response<T> {
-    jsonrpc: String,
     id: u64,
-    #[serde(flatten)]
-    result: ResultResponse<T>,
+    result: Option<T>,
+    error: Option<self::errors::RpcError>,
 }
 
-#[derive(Debug, serde::Deserialize)]
-#[serde(untagged)]
-enum ResultResponse<T> {
-    Result { result: T },
-    Error { error: self::errors::RpcError },
+impl<T> Response<T>
+where
+    T: serde::Serialize,
+{
+    fn into_result(self) -> Result<T, CallError> {
+        use self::errors::JsonRpcInvalidReason::{BothErrorAndResult, NeitherErrorNorResult};
+
+        match (self.result, self.error) {
+            (Some(res), None) => Ok(res),
+            (None, Some(err)) => Err(err)?,
+            (None, None) => Err(NeitherErrorNorResult)?,
+            (Some(res), Some(err)) => Err(BothErrorAndResult {
+                error: err,
+                result: serde_json::to_string(&res)
+                    .unwrap_or_else(|e| format!("[internal json serialization failure: {e}]")),
+            })?,
+        }
+    }
+}
+
+fn base64_encode(s: &str) -> String {
+    use base64::Engine;
+
+    base64::engine::general_purpose::URL_SAFE.encode(s)
 }

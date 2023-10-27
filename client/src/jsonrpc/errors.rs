@@ -21,6 +21,10 @@ pub enum JsonRpcInvalidReason {
     UnknownVersion(String),
     #[error("unexpected id {found:?}, expecting {expected:?}")]
     UnexpectedId { expected: u64, found: u64 },
+    #[error("neither error nor result fields in reponse")]
+    NeitherErrorNorResult,
+    #[error("both error & result present: error {error:?} and result {result:?}")]
+    BothErrorAndResult { error: RpcError, result: String },
 }
 
 #[derive(Debug, Error, Deserialize)]

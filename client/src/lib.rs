@@ -16,10 +16,34 @@ pub struct ZcashdClient {
 
 impl ZcashdClient {
     /// Construct a new client
-    pub fn new(endpoint: &str) -> Result<Self, jsonrpc::NewError> {
+    pub fn new(endpoint: &str, cookie: &str) -> Result<Self, jsonrpc::NewError> {
         Ok(ZcashdClient {
-            jsonclient: jsonrpc::Client::new(endpoint)?,
+            jsonclient: jsonrpc::Client::new(endpoint, cookie)?,
         })
+    }
+
+    /// Poll `self.get_info` and as long this produces a known startup-message error, wait and retry
+    ///
+    /// Other errors are propagated
+    pub async fn wait_for_startup(&mut self) -> Result<GetInfo, jsonrpc::CallError> {
+        use tokio::time::{sleep, Duration};
+
+        const POLL_INTERVAL: Duration = Duration::from_millis(113);
+
+        loop {
+            match self.get_info().await {
+                Err(jsonrpc::CallError::JsonRpcError(e))
+                    if e.code == -28
+                        && (e.message == "Loading block index..."
+                            || e.message == "Loading wallet...") =>
+                {
+                    sleep(POLL_INTERVAL).await;
+                }
+                other => {
+                    return other;
+                }
+            }
+        }
     }
 }
 

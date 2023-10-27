@@ -6,7 +6,7 @@ use tokio::fs::File;
 use tokio::process::Child;
 use tokio::time::{sleep, Duration};
 
-const POLL_INTERVAL: Duration = Duration::from_millis(100);
+const POLL_INTERVAL: Duration = Duration::from_millis(127);
 
 pub(crate) async fn setup() -> anyhow::Result<(Child, ZcashdConfig)> {
     let datadir =
@@ -79,7 +79,7 @@ async fn wait_for_rpc_service(datadir: &Path) -> std::io::Result<()> {
                 }
                 line.clear();
             }
-            Err(ref e) if e.kind() == io::ErrorKind::WouldBlock => {
+            Err(e) if e.kind() == io::ErrorKind::WouldBlock => {
                 // Would block, wait before trying again
                 sleep(POLL_INTERVAL).await;
             }
