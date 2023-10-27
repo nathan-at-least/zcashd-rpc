@@ -9,11 +9,8 @@ async fn get_info() -> anyhow::Result<()> {
 }
 
 async fn get_info_with_node(node_config: ZcashdConfig) -> anyhow::Result<()> {
-    println!(
-        "launched regtest node with datadir {:?}",
-        node_config.datadir.display()
-    );
-    let mut client = ZcashdClient::new("http://127.0.0.1:18232")?;
+    println!("launched regtest node: {:#?}", &node_config);
+    let mut client = ZcashdClient::new(&node_config.rpc_endpoint)?;
     let info = client.get_info().await?;
     dbg!(info);
     Ok(())

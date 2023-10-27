@@ -51,10 +51,11 @@ fn launch_child(datadir: &Path) -> anyhow::Result<(Child, String, String)> {
 
     let child = cmd.spawn().context(command_description.clone())?;
 
+    // BUG: Parse the endpoint from config or log output.
     Ok((
         child,
         command_description,
-        "https://127.0.0.1:18232".to_string(),
+        "http://127.0.0.1:18232".to_string(),
     ))
 }
 
