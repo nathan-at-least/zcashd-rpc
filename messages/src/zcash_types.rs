@@ -6,8 +6,11 @@
 //!
 //! For expediency many are currently type aliases to aide in distinguishing bare types.
 
-/// An amount of ZEC in units of Zatoshi
+/// An integer-precision amount of ZEC in units of Zatoshi
 pub type Zat = u64;
+
+/// An f64-precision amount of ZEC in units of ZEC
+pub type Zec = f64;
 
 /// A protocol version integer encoding
 pub type VersionEncoding = u64;

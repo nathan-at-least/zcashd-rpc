@@ -107,6 +107,10 @@ async fn open_file_once_present(path: &Path) -> std::io::Result<File> {
 }
 
 async fn read_cookie(datadir: &Path) -> anyhow::Result<String> {
-    let cookie = tokio::fs::read_to_string(datadir.join("regtest").join(".cookie")).await?;
+    let cookiepath = datadir.join("regtest").join(".cookie");
+
+    let cookie = tokio::fs::read_to_string(&cookiepath)
+        .await
+        .context(format!("path: {:?}", cookiepath.display()))?;
     Ok(cookie)
 }

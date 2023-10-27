@@ -29,14 +29,11 @@ impl ZcashdClient {
         use tokio::time::{sleep, Duration};
 
         const POLL_INTERVAL: Duration = Duration::from_millis(113);
+        const RPC_IN_WARMUP: i64 = -28; // Ref: `zcash/src/rpc/protocol.h`
 
         loop {
             match self.get_info().await {
-                Err(jsonrpc::CallError::JsonRpcError(e))
-                    if e.code == -28
-                        && (e.message == "Loading block index..."
-                            || e.message == "Loading wallet...") =>
-                {
+                Err(jsonrpc::CallError::JsonRpcError(e)) if e.code == RPC_IN_WARMUP => {
                     sleep(POLL_INTERVAL).await;
                 }
                 other => {

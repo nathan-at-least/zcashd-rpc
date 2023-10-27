@@ -7,7 +7,7 @@
 
 pub mod zcash_types;
 
-use crate::zcash_types::{BlockHeight, ConstZero, Timestamp, VersionEncoding, Zat};
+use crate::zcash_types::{BlockHeight, ConstZero, Timestamp, VersionEncoding, Zat, Zec};
 
 /// General status information for a node
 ///
@@ -43,7 +43,7 @@ pub struct GetInfo {
     /// **To be depecreated**; Whether or not the node is connected to the testnet
     pub testnet: bool,
     /// The fee rate for relaying transactions
-    pub relayfee: Zat,
+    pub relayfee: Zec,
     /// The "statusbar" (e.g. sticky / pinned) errors description
     pub errors: String,
     /// The update time of [GetInfo::errors]
