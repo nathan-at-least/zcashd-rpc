@@ -1,7 +1,6 @@
 use zcashd_regtest_controller::ZcashdConfig;
 use zcashd_rpc_client::ZcashdClient;
 
-#[ignore] // This test is not yet functional.
 #[tokio::test]
 async fn get_info() -> anyhow::Result<()> {
     zcashd_regtest_controller::with_temporary_node(get_info_with_node).await
