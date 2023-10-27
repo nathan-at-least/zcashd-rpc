@@ -7,13 +7,8 @@ pub struct ZcashdConfig {
     pub datadir: PathBuf,
     /// A description of the process command
     pub command_description: String,
-}
-
-impl ZcashdConfig {
-    /// Read the RPC cookie
-    pub async fn read_cookie(&self) -> anyhow::Result<String> {
-        let cookie =
-            tokio::fs::read_to_string(self.datadir.join("regtest").join(".cookie")).await?;
-        Ok(cookie)
-    }
+    /// The JSON-RPC auth cookie
+    pub rpc_cookie: String,
+    /// The URL of the JSON-RPC endpoint
+    pub rpc_endpoint: String,
 }
