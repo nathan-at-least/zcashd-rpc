@@ -54,6 +54,15 @@ impl Distribution<i64> for FuzzDistribution {
     }
 }
 
+impl Distribution<f64> for FuzzDistribution {
+    fn sample<R>(&self, rng: &mut R) -> f64
+    where
+        R: Rng + ?Sized,
+    {
+        rng.gen_range(f64::MIN..f64::MAX)
+    }
+}
+
 impl Distribution<String> for FuzzDistribution {
     fn sample<R>(&self, rng: &mut R) -> String
     where

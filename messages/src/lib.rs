@@ -7,7 +7,7 @@
 
 pub mod zcash_types;
 
-use crate::zcash_types::{BlockHeight, ConstZero, Timestamp, VersionEncoding, Zat};
+use crate::zcash_types::{BlockHeight, ConstZero, Timestamp, VersionEncoding, Zat, Zec};
 
 /// General status information for a node
 ///
@@ -19,7 +19,7 @@ use crate::zcash_types::{BlockHeight, ConstZero, Timestamp, VersionEncoding, Zat
 /// - wallet is supported and active (e.g. supported and active in the node instance): both fields above are present.
 ///
 /// Transcribed from `zcash/src/rpc/misc.cpp` `getinfo`
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub struct GetInfo {
     /// The provider version integer
     pub version: VersionEncoding,
@@ -43,7 +43,7 @@ pub struct GetInfo {
     /// **To be depecreated**; Whether or not the node is connected to the testnet
     pub testnet: bool,
     /// The fee rate for relaying transactions
-    pub relayfee: Zat,
+    pub relayfee: Zec,
     /// The "statusbar" (e.g. sticky / pinned) errors description
     pub errors: String,
     /// The update time of [GetInfo::errors]
@@ -53,7 +53,7 @@ pub struct GetInfo {
 /// Status information about a node's wallet
 ///
 /// Transcribed from `zcash/src/rpc/misc.cpp` `getinfo`
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub struct WalletInfo {
     /// The wallet engine version
     pub walletversion: VersionEncoding,
@@ -69,7 +69,7 @@ pub struct WalletInfo {
 /// Status information about a node's active wallet
 ///
 /// Transcribed from `zcash/src/rpc/misc.cpp` `getinfo`
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
 pub struct ActiveWalletInfo {
     /// The timestamp of the oldest key in the keypool
     pub keypoololdest: Timestamp,
