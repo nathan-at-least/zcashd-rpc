@@ -2,5 +2,45 @@ name: cargo-checkmate Continuous Integration
 
 on: pull_request
 jobs:
-  phases:
-    uses: cargo-checkmate/cargo-checkmate/.github/workflows/callee.yaml@gh-callee-v1
+  cache-checkmate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: taiki-e/cache-cargo-install-action@v1
+      with:
+        tool: cargo-checkmate
+
+  run-phase:
+    strategy:
+      matrix:
+        phase: [check, format, clippy, build, doc]
+    needs: cache-checkmate
+    runs-on: ubuntu-latest
+    steps:
+    - uses: taiki-e/cache-cargo-install-action@v1
+      with:
+        tool: cargo-checkmate
+    - uses: actions/checkout@v3
+    - run: cargo-checkmate run ${{ matrix.phase }}
+
+  zcash-integration-tests:
+    strategy:
+      matrix:
+        phase: [test]
+    needs: cache-checkmate
+    runs-on: ubuntu-latest
+    steps:
+    - name: Install zcashd
+      run: >
+        sudo apt-get update
+        && sudo apt-get install apt-transport-https wget gnupg2
+        && wget -qO - https://apt.z.cash/zcash.asc | gpg --import
+        && gpg --export B1C9095EAA1848DBB54D9DDA1D05FDC66B372CFE | sudo apt-key add -
+        && echo "deb [arch=amd64] https://apt.z.cash/ bullseye main" | sudo tee /etc/apt/sources.list.d/zcash.list
+        && sudo apt-get update
+        && sudo apt-get install zcash
+    - uses: taiki-e/cache-cargo-install-action@v1
+      with:
+        tool: cargo-checkmate
+    - uses: actions/checkout@v3
+    - run: cargo-checkmate run ${{ matrix.phase }}
